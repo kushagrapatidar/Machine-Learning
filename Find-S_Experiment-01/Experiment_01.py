@@ -11,8 +11,7 @@ for row in data:
             for i in range(len(row)-1):
                 if H[i]!=row[i]:
                     H[i]='?'
-    else:
-        continue
     print(f"Training Example number {n+1} hypothesis: ",H[:-1])
+    n=n+1
 
 print("\nMaxymal Hypothesis:", H[:-1])
