@@ -1,5 +1,5 @@
 from csv import reader
-file=open("finds.csv", 'r')
+file=open("Find-S_Experiment-01/finds.csv", 'r')
 data=reader(file)
 H=None
 for row in data:
