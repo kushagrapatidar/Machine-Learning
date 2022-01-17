@@ -15,4 +15,4 @@ for row in data:
         continue
     print(f"Training Example number {n+1} hypothesis: ",H[:-1])
 
-print("Maxymal Hypothesis:", H[:-1])
+print("\nMaxymal Hypothesis:", H[:-1])
