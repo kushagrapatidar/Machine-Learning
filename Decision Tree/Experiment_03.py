@@ -34,8 +34,10 @@ for i in range(len(Heads)):
     Heads[i].weights=Weights
 [print(Heads[_].data,": ",Heads[_].weights) for _ in range(len(Heads))]
 # [print(row) for row in Data]
-for i in range(len(Heads)):
-    for weight in Heads[i].weights:
-        if weight not in Heads[i].next_attributes.keys():
-            Heads[i].next_attributes[weight]=None
-print(Heads[0].next_attributes)
+print(len(Heads))
+for x in range(len(Heads)):
+    print(x)
+    for weight in Heads[x].weights:
+        if weight not in Heads[x].next_attributes.keys():
+            Heads[x].next_attributes[weight]=None
+        print(Heads[x].data,Heads[x].next_attributes.keys())
