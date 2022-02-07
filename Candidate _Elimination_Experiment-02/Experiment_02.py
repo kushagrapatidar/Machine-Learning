@@ -1,5 +1,5 @@
 from csv import reader
-file=open("finds.csv", 'r')
+file=open("candidateelim.csv", 'r')
 data=reader(file)
 H=None
 G=[]
@@ -12,14 +12,21 @@ for row in data:
             for i in range(len(row)-1):
                 if H[i]!=row[i]:
                     H[i]='?'
-    elif row[-1]=='No':
+    elif H!=None and row[-1]=='No':
         for i in range(len(H)):
             h=['?']*len(H)
             if H[i]!=row[i]:
                 h[i]=H[i]
             G.append(h)
+    elif H==None and row[-1]=='No':
+        for i in range(len(row[:-1])):
+            h=['?']*len(row[:-1])
+            h[i]=row[i]
+            if h not in G:
+                G.append(h)
+        
     n=n+1
-
+print(G)
 for g in G:
     for i in range(len(g)):
         if H[i]==g[i]:
