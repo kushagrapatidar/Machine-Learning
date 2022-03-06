@@ -1,41 +1,109 @@
-class node:
-    data=None
-    weights=list()
-    next_attributes=None
-    def _init_(self,head):
-        self.data=head
+import csv 
+import math
 
-def calculate_entropy(attribute):
+def read_data(filename):
+    """ read csv file and return header and data  """
+    with open(filename, 'r') as csvfile:
+        datareader = csv.reader(csvfile, delimiter=',')
+        metadata = next(datareader)
+        traindata = []
+        for row in datareader:
+            traindata.append(row)
+
+    return metadata, traindata
+
+def calculate_entropy(attributes, lable):
+    true_indx = []
+
+    for index in range(len(lable)):
+        if lable[index] == 'yes':
+            true_indx.append(index)
     
-    return 0
-def calculate_gain(attribute,next_attribute):
-    return 0
+    if attributes != lable:
+        unique_attribute = []
+        for attribute in attributes:
+            if attribute not in unique_attribute:
+                unique_attribute.append(attribute)
 
-from csv import reader
-file=open("decisionTree.csv", 'r')
-Data=reader(file)
-Heads=None
-for row in Data:
-    if Heads==None:
-        Heads=row
-        break
-Data=[row for row in Data]
-Heads=Heads[:-1]
-for _ in range(len(Heads)):
-    temp=node()
-    temp.data=Heads[_]
-    Heads[_]=temp
-for i in range(len(Heads)):
-    Weights=[]
-    for j in range(len(Data)):
-        if Data[j][i] not in Weights:
-            Weights.append(Data[j][i])
-    Heads[i].weights=Weights
-[print(Heads[_].data,": ",Heads[_].weights) for _ in range(len(Heads))]
-# [print(row) for row in Data]
-for x in range(len(Heads)):
-    Heads[x].next_attributes=dict()
-    for weight in Heads[x].weights:
-        if weight not in Heads[x].next_attributes.keys():
-            Heads[x].next_attributes[weight]=None
-    print(Heads[x].data,Heads[x].next_attributes.keys())
+        print(true_indx)
+        print(unique_attribute)
+
+        attribute_dict = {}
+        for attribute in unique_attribute:
+            attribute_dict[attribute + '-yes'] = 0
+            attribute_dict[attribute + '-no'] = 0 
+
+        print(attribute_dict)
+
+        for attribute_index, attribute in enumerate(attributes):
+            if attribute_index in true_indx:
+                attribute_dict[f'{attribute}-yes'] += 1
+
+            else:
+                attribute_dict[f'{attribute}-no'] += 1 
+            
+        entropy = {}
+        for attribute in unique_attribute:
+            total = attribute_dict[f'{attribute}-yes'] + attribute_dict[f'{attribute}-no'] 
+            yes = attribute_dict[f'{attribute}-yes']
+            no = attribute_dict[f'{attribute}-no']
+
+            p1 = yes/total
+            p2 = no/total
+            
+            if yes == 0:
+                p1 = 1 
+            if no == 0:
+                p2 = 1
+
+            temp_entropy = - ((yes/total)*math.log2(p1)) - ((no/total)*math.log2(p2)) 
+            entropy[attribute]=temp_entropy
+
+    else:
+        total = len(lable)
+        yes = len(true_indx)
+        no = total - yes    
+
+        p1 = yes/total
+        p2 = no/total
+        
+        if yes == 0:
+            p1 = 1 
+        if no == 0:
+            p2 = 1
+        entropy = - ((yes/total)*math.log2(p1)) - ((no/total)*math.log2(p2))
+    return entropy
+
+def calculate_gain(entropyS, entropy, attributes):
+
+    unique_attributes={}
+    for attribute in attributes:
+        if attribute in unique_attributes.keys():
+            unique_attributes[attribute] += 1
+        else:
+            unique_attributes[attribute] = 1
+    
+    pes = 0
+    for unique_attribute_key, unique_attribute in enumerate(unique_attributes):
+        pes += (unique_attribute/len(attributes))*entropy[unique_attribute_key]
+
+    gain = entropyS - pes
+
+    return gain
+
+if __name__ == '__main__':
+    metadata, traindata = read_data('decisionTree.csv')
+    col = []
+    for row in traindata:
+        col.append(row[0])
+
+    lable = []
+    for row in traindata:
+        lable.append(row[-1])
+
+    print(metadata)
+    print(traindata)
+    
+    entropy = calculate_entropy(lable, lable)
+    print(entropy)
+    calculate_gain(entropyS, entropy, attributes)
