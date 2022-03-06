@@ -1,10 +1,16 @@
 from sklearn import tree
-from csv import reader
+from sklearn.preprocessing import LabelEncoder
+import pandas as pd
 
-file=open("train.csv", 'r')
-filedata=reader(file)
-data=[]
-for row in filedata:
-    data.append(row)
-    print(row)
-num_attributes=len(data[0])-1
+filename="train.csv"
+dataset=pd.read_csv(filename)
+Y=list(dataset.columns)
+Y=Y[1:]
+X=dataset[Y]
+print(Y)
+print(X)
+le=LabelEncoder()
+le.fit(Y)
+for col in Y:
+    le.fit(X[col].astype(str))
+    le.transform(X[col].astype(str))
