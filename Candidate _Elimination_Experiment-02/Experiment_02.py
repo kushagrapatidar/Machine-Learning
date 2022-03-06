@@ -1,45 +1,59 @@
-#Under Developement
+#Reading and Creating the dataset as a list of list
 from csv import reader
 file=open("candidateelim.csv", 'r')
-data=reader(file)
-H=None
-G=[]
-n=0
-for row in data:
-    if row[-1]=='Yes':
-        if H==None:
-            H=row[:-1]
-        else:
-            for i in range(len(row)-1):
-                if H[i]!=row[i]:
-                    H[i]='?'
-    elif H!=None and row[-1]=='No':
-        for i in range(len(H)):
-            h=['?']*len(H)
-            if H[i]!=row[i]:
-                h[i]=H[i]
-            G.append(h)
-    elif H==None and row[-1]=='No':
-        for i in range(len(row[:-1])):
-            h=['?']*len(row[:-1])
-            h[i]=row[i]
-            if h not in G:
-                G.append(h)
-        
-    n=n+1
+filedata=reader(file)
+data=[]
+for row in filedata:
+    data.append(row)
+    print(row)
+num_attributes=len(data[0])-1
+
+#The initial value of hypothesis
+S=['0']*num_attributes
+G=['?']*num_attributes
+
+#The most specific hypothesis S0 and most general hypothesis G0
+print(S)
 print(G)
-for g in G:
-    for i in range(len(g)):
-        if H[i]==g[i]:
+
+# if data[0][-1]=='No':
+#     idx=1
+#     data[0],data[idx]=data[idx],data[0]
+for i in range(num_attributes):
+    S[i]=data[0][i]
+
+#Candidate Elimination algorithm
+temp=[]
+for i in range(len(data)):
+    #If the instance is positive this condition
+    #generalize the specific hyposthesis
+    if data[i][num_attributes]=='Yes':
+        for j in range(num_attributes):
+            if data[i][j]!=S[j]:
+                S[j]='?'
+        #The loop below makes the necessary changes
+        #in the general hypothesis as per the above changes
+        # in specific hypothesis
+        for j in range(num_attributes):
+            for k in range(1,len(temp)):
+                if temp[k][j]!='?' and temp[k][j]!=S[j]:
+                    del temp[k]
+                    
+        if (len(temp)==0):
             continue
         else:
-            g[i]='?'
+            G=temp
+            
+    #If the instance is negative this condition makes
+    #the general hypothesis more specific
+    if data[i][num_attributes]=='No':
+        for j in range(num_attributes):
+            if S[j] != data[i][j] and S[j]!= '?':
+                G[j]=S[j]
+                temp.append(G)
+                G = ['?'] * num_attributes
+        G=temp
 
-while True:
-    if ['?']*len(H) in G:
-        G.remove(['?']*len(H))
-    else:
-        break
-
-print(G)
-print("\n\nMaxymal Hypothesis:", H)
+#Hypothesis S and G
+print("Hypothesis S:",S)
+print("Hypothesis G:",G)
