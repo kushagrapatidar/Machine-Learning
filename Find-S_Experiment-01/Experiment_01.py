@@ -19,4 +19,4 @@ for row in data:
                     H[i]='?'
 
 #Maxymal Hypothesis:
-print("\nMaxymal Hypothesis:", H[:-1])
+print("Maxymal Hypothesis:", H[:-1])
